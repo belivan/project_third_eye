@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import torch
 
 
-def person_mask(image):
-    model = YOLO("yolov8n-seg.pt")  # choose the YOLO model you want to use
+def get_box(image):
+    model = YOLO("yolov8n.pt")  # choose the YOLO model you want to use
     results = model.predict(image)  # feed the image into the model
     result = results[0]  # extract the result 0 since we only fed one image to the model
 
@@ -16,7 +16,13 @@ def person_mask(image):
         if box.cls == 0:  # if the box is a person
             x1, y1, x2, y2 = box.xyxy[0].tolist()
 
-            # return np.array([x1, y1, x2, y2], dtype=int)
+            return np.array([x1, y1, x2, y2], dtype=int)
+
+
+def person_mask(image):
+    model = YOLO("yolov8n-seg.pt")  # choose the YOLO model you want to use
+    results = model.predict(image)  # feed the image into the model
+    result = results[0]  # extract the result 0 since we only fed one image to the model
 
     mask = result.masks
     keypoints = result.keypoints
@@ -31,11 +37,24 @@ def person_mask(image):
 
     return np.array([x, y]).T
 
+def get_keypoints(image):
+    model = YOLO("yolov8n-pose.pt")  # choose the YOLO model you want to use
+    results = model.predict(image)  # feed the image into the model
+    result = results[0]  # extract the result 0 since we only fed one image to the model
+
+    keypoints = result.keypoints.xy[0].tolist()
+
+
+    return np.array(keypoints, dtype=int)
+
 
 if __name__ == "__main__":
-    color_image = cv.imread("data/intel pictures/color_frame_0007.png")
-    depth_image = np.load("data/intel pictures/depth_frame_0007.npy")
-    mask = person_mask(color_image)
+    color_image = cv.imread("data2/intel pictures/color_frame_0007.png")
+    depth_image = np.load("data2/intel pictures/depth_frame_0007.npy")
+    keypoints = get_keypoints(color_image)
+
+    for point in keypoints:
+        cv.circle(color_image, point, 3, (0,0,255), -1)
     cv.imshow("image", color_image)
 
 
