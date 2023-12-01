@@ -3,10 +3,10 @@ import cv2 as cv
 from coord_transform import coord2point
 from pose import PoseEstimator
 from pixel_to_3d import PixelToWorldProcessor
-# from camera_merge import SensePhoneMerger
 import os
 from extract_data import extract_data
 from camera_merge import VideoMaker
+
 
 # |----------------------------------------------------------------------|
 # |                         Initialise parameters                        |
@@ -23,9 +23,7 @@ color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "test
 
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
-
-# VIDEO WRITER PATH: **CHANGE DIRECTORY IF NECESSARY**
-video = VideoMaker(output_filename="result3_test2.mp4")
+video = VideoMaker(output_filename="result.mp4")
 
 # -------------------------DEFINE PHONE PARAMETERS----------------------
 
@@ -54,7 +52,7 @@ phone_images = np.load(phone_file)
 depth_images = np.load(depth_file)
 color_images = np.load(color_file)
 
-video.setup_video_writer(phone_images[0], color_images[0])
+# video.setup_video_writer(phone_images[0], color_images[0])
 
 # |----------------------------------------------------------------------|
 # |                               Main loop                              |
@@ -68,7 +66,7 @@ for i in range(len(color_images)):
 
     # Get pose keypoints from color sensor image
     pose_keypoints = pose.predict_keypoints_transform(image=sense_image)
-    print("Successfully created pose keypoints for frame " + str(i) + ".")
+    # print("Successfully created pose keypoints for frame " + str(i) + ".")
 
     if None not in pose_keypoints:
         # Get 3D coordinates from depth image
@@ -91,17 +89,17 @@ for i in range(len(color_images)):
         for coord in phone_coords:
             coord[0] = 1280 / 4032 * coord[0]
             coord[1] = 720 / 3024 * coord[1]
-            cv.circle(phone_image, coord, 5, (0, 0, 255), -1)
+            cv.circle(phone_image, coord, 3, (0, 0, 255), -1)
 
-    # cv.imshow("phone image", phone_image)
-    # cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
+    cv.imshow("phone image", phone_image)
+    cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
 
     # Write frame to video
-    video.write_frame(phone_image, sense_image, depth_image, stream=False)
+    # video.write_frame(phone_image, sense_image, depth_image, stream=False)
 
     if cv.waitKey(100) == ord("q"):
         break
 
-video.close()
+# video.close()
 print("Video processing complete.")
 cv.destroyAllWindows()
