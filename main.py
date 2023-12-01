@@ -11,13 +11,14 @@ from extract_data import extract_data
 # |                         Initialise parameters                        |
 # |----------------------------------------------------------------------|
 
-# Gets the directory where the script is located
+# Getsthedirectory where the script is located
 current_dir = os.path.dirname(__file__)
 os.chdir(current_dir)
 
 color_file, depth_file, phone_file = extract_data("second_sample.bag", "origin_new.mp4")
 
 # INITIALIZE DATA PROCESSORS
+
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
 # merger = SensePhoneMerger(output_directory="output", output_filename="merged.avi")
