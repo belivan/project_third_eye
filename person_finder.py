@@ -6,57 +6,61 @@ import matplotlib.pyplot as plt
 import torch
 
 
-def get_box(image):
-    model = YOLO("yolov8n.pt")  # choose the YOLO model you want to use
-    results = model.predict(image)  # feed the image into the model
-    result = results[0]  # extract the result 0 since we only fed one image to the model
+class person_detection():
+    def __init__(self, model_name):
+        self.model_name = model_name
+        self.model = None
+        self._load_model(model_name)
 
-    for box in result.boxes:  # result.boxes will contain the objects detected
+    def _load_model(self, model_name):
+        self.model = YOLO(model_name)
 
-        if box.cls == 0:  # if the box is a person
-            x1, y1, x2, y2 = box.xyxy[0].tolist()
+    def get_box(self, image):
+        results = self.model.predict(image)  # feed the image into the model
+        result = results[0]  # extract the result 0 since we only fed one image to the model
 
-            return np.array([x1, y1, x2, y2], dtype=int)
+        for box in result.boxes:  # result.boxes will contain the objects detected
 
+            if box.cls == 0:  # if the box is a person
+                x1, y1, x2, y2 = box.xyxy[0].tolist()
 
-def person_mask(image):
-    model = YOLO("yolov8n-seg.pt")  # choose the YOLO model you want to use
-    results = model.predict(image)  # feed the image into the model
-    result = results[0]  # extract the result 0 since we only fed one image to the model
+                return np.array([x1, y1, x2, y2], dtype=int)
 
-    mask = result.masks
-    keypoints = result.keypoints
+    def person_mask(self, image):
+        results = self.model.predict(image)  # feed the image into the model
+        result = results[0]  # extract the result 0 since we only fed one image to the model
 
-    contours = np.array(mask.xy, dtype=int)
+        mask = result.masks
+        keypoints = result.keypoints
 
-    blank = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
+        contours = np.array(mask.xy, dtype=int)
 
-    cv.drawContours(blank, contours, -1, 255, cv.FILLED)
+        blank = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
 
-    x, y = np.where(blank == 255)
+        cv.drawContours(blank, contours, -1, 255, cv.FILLED)
 
-    return np.array([x, y]).T
+        x, y = np.where(blank == 255)
 
-def get_keypoints(image):
-    model = YOLO("yolov8n-pose.pt")  # choose the YOLO model you want to use
-    results = model.predict(image)  # feed the image into the model
-    result = results[0]  # extract the result 0 since we only fed one image to the model
+        return np.array([x, y]).T
 
-    keypoints = result.keypoints.xy[0].tolist()
+    def get_keypoints(self, image):
+        results = self.model.predict(image)  # feed the image into the model
+        result = results[0]  # extract the result 0 since we only fed one image to the model
 
+        keypoints = result.keypoints.xy[0].tolist()
 
-    return np.array(keypoints, dtype=int)
+        return np.array(keypoints, dtype=int)
 
 
 if __name__ == "__main__":
+    pd = person_detection("yolov8n-pose.pt")
     color_image = cv.imread("data2/intel pictures/color_frame_0007.png")
     depth_image = np.load("data2/intel pictures/depth_frame_0007.npy")
-    keypoints = get_keypoints(color_image)
+    keypoints = pd.get_keypoints(color_image)
 
     for point in keypoints:
-        cv.circle(color_image, point, 3, (0,0,255), -1)
+        cv.circle(color_image, point, 3, (0, 0, 255), -1)
     cv.imshow("image", color_image)
-
 
     cv.waitKey(0)
     cv.destroyAllWindows()
