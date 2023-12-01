@@ -69,7 +69,7 @@ def _extract_sense_bag(bag_file, save_dir, max_frames=667):
 
     np.save(os.path.join(save_dir, "color_frames.npy"), color_frames)
     np.save(os.path.join(save_dir, "depth_frames.npy"), depth_frames)
-    
+
     return True
 
 
@@ -79,8 +79,8 @@ def _extract_phone(video):
     while True:
         ret, frame = cap.read()  # read video
         if not ret:
-            break     
-        frames.append(frame)   # save the frame  
+            break
+        frames.append(frame)   # save the frame
     frames = np.array(frames)  # convert everything to numpy array
     np.save("data/phone_frames.npy", frames)  # save the numpy array
     return True

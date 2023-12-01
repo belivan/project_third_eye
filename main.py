@@ -17,13 +17,15 @@ current_dir = os.path.dirname(__file__)
 os.chdir(current_dir)
 
 # SPECIFY DATA FILES HERE: **CHANGE DIRECTORY IF NECESSARY**
-color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "origin_new.mp4")
+color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "test2.mp4")
 
 # INITIALIZE DATA PROCESSORS
 
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
-video = VideoMaker(output_filename="result.mp4")
+
+# VIDEO WRITER PATH: **CHANGE DIRECTORY IF NECESSARY**
+video = VideoMaker(output_filename="result3_test2.mp4")
 
 # -------------------------DEFINE PHONE PARAMETERS----------------------
 
