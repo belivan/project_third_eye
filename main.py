@@ -3,26 +3,26 @@ import cv2 as cv
 from coord_transform import coord2point
 from pose import PoseEstimator
 from pixel_to_3d import PixelToWorldProcessor
-#from camera_merge import SensePhoneMerger
+# from camera_merge import SensePhoneMerger
 import os
 from extract_data import extract_data
 
-#|----------------------------------------------------------------------|
-#|                         Initialise parameters                        |
-#|----------------------------------------------------------------------|
+# |----------------------------------------------------------------------|
+# |                         Initialise parameters                        |
+# |----------------------------------------------------------------------|
 
 # Gets the directory where the script is located
-current_dir = os.path.dirname(__file__)  
+current_dir = os.path.dirname(__file__)
 os.chdir(current_dir)
 
-color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "origin_adjusted.mp4")
+color_file, depth_file, phone_file = extract_data("second_sample.bag", "origin_new.mp4")
 
 # INITIALIZE DATA PROCESSORS
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
 # merger = SensePhoneMerger(output_directory="output", output_filename="merged.avi")
 
-#-------------------------DEFINE PHONE PARAMETERS----------------------
+# -------------------------DEFINE PHONE PARAMETERS----------------------
 
 # Rotation matrix 
 R = np.array([[0.0, 0.0, -1.0],
@@ -43,15 +43,15 @@ A = np.array([[f / delta, 0.0, Cu],
               [0.0, f / delta, Cv],
               [0.0, 0.0, 1.0]])
 
-#---------------------------Load phone files-----------------------------
+# ---------------------------Load phone files-----------------------------
 
 phone_images = np.load(phone_file)
 depth_images = np.load(depth_file)
 color_images = np.load(color_file)
 
-#|----------------------------------------------------------------------|
-#|                               Main loop                              |
-#|----------------------------------------------------------------------|
+# |----------------------------------------------------------------------|
+# |                               Main loop                              |
+# |----------------------------------------------------------------------|
 
 for i in range(len(color_images)):
     # Get all images as NumPy arrays
@@ -82,8 +82,8 @@ for i in range(len(color_images)):
         phone_coords = coord2point(depth_coords, R, t, A)
 
         for coord in phone_coords:
-            coord[0] = 1280/4032 * coord[0]
-            coord[1] = 720/3024 * coord[1]
+            coord[0] = 1280 / 4032 * coord[0]
+            coord[1] = 720 / 3024 * coord[1]
             cv.circle(phone_image, coord, 5, (0, 0, 255), -1)
             cv.circle(phone_image, coord, 5, (0, 0, 255), -1)
 
