@@ -23,7 +23,7 @@ color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "test
 
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
-video = VideoMaker(output_filename="result.mp4")
+video = VideoMaker(output_filename="result3_test2.mp4")
 
 # -------------------------DEFINE PHONE PARAMETERS----------------------
 
@@ -52,7 +52,7 @@ phone_images = np.load(phone_file)
 depth_images = np.load(depth_file)
 color_images = np.load(color_file)
 
-# video.setup_video_writer(phone_images[0], color_images[0])
+video.setup_video_writer(phone_images[0], color_images[0])
 
 # |----------------------------------------------------------------------|
 # |                               Main loop                              |
@@ -91,14 +91,14 @@ for i in range(len(color_images)):
             coord[1] = 720 / 3024 * coord[1]
             cv.circle(phone_image, coord, 3, (0, 0, 255), -1)
 
-    cv.imshow("phone image", phone_image)
-    cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
+    # cv.imshow("phone image", phone_image)
+    # cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
 
     # Write frame to video
-    # video.write_frame(phone_image, sense_image, depth_image, stream=False)
+    video.write_frame(phone_image, sense_image, depth_image, stream=False)
 
-    if cv.waitKey(100) == ord("q"):
-        break
+    # if cv.waitKey(100) == ord("q"):
+    #     break
 
 # video.close()
 print("Video processing complete.")
