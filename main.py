@@ -3,7 +3,7 @@ import cv2 as cv
 from coord_transform import coord2point
 from pose import PoseEstimator
 from pixel_to_3d import PixelToWorldProcessor
-#from camera_merge import SensePhoneMerger
+# from camera_merge import SensePhoneMerger
 import os
 from extract_data import extract_data
 from camera_merge import VideoMaker
@@ -20,6 +20,7 @@ os.chdir(current_dir)
 color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "origin_new.mp4")
 
 # INITIALIZE DATA PROCESSORS
+
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
 video = VideoMaker(output_filename="result.mp4")
@@ -86,8 +87,8 @@ for i in range(len(color_images)):
         phone_coords = coord2point(depth_coords, R, t, A)
 
         for coord in phone_coords:
-            coord[0] = 1280/4032 * coord[0]
-            coord[1] = 720/3024 * coord[1]
+            coord[0] = 1280 / 4032 * coord[0]
+            coord[1] = 720 / 3024 * coord[1]
             cv.circle(phone_image, coord, 5, (0, 0, 255), -1)
 
     # cv.imshow("phone image", phone_image)
