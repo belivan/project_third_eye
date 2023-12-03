@@ -32,7 +32,7 @@ class VideoMaker:
         self.fps_sense = float(30.0)
 
         self.video_writer = None
-        
+
         self.frame_index = 0
 
     def setup_video_writer(self, example_img_phone, example_img_sense):
@@ -58,9 +58,9 @@ class VideoMaker:
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-        self.video_writer = cv2.VideoWriter(self.video_path, fourcc, self.fps_phone, (width, height))
-        
-        if self.output_filename and self.output_directory is not None:
+        self.video_writer = cv2.VideoWriter(self.video_path, fourcc, 30, (width, height))
+
+        if self.output_filename:
             os.makedirs(self.output_directory, exist_ok=True)
             print(f"Video writer to file: {self.video_path}")
 
@@ -80,7 +80,7 @@ class VideoMaker:
 
         # image_phone = cv2.cvtColor(image_phone, cv2.COLOR_RGB2BGR)
         image_color = cv2.cvtColor(image_color, cv2.COLOR_RGB2BGR)
-        
+
         # Clip the depth image to fall within the range 0-8000
         depth_clipped = np.clip(image_depth, 0, 8000)
         # Normalize the depth image to fall within the range 0-255
@@ -89,7 +89,7 @@ class VideoMaker:
         # Apply the color map to the normalized depth image
         image_depth = cv2.applyColorMap(depth_normalized, cv2.COLORMAP_JET)
 
-        if stream or self.output_filename is not None:
+        if stream or self.output_filename:
             height, width = image_phone.shape[:2]
             resized_phone_image = cv2.resize(image_phone,
                                              (width * 2, height * 2))
@@ -120,14 +120,16 @@ class VideoMaker:
                         font_color, font_thickness)
 
             # Write to video if output path is set
-            if self.output_filename and self.output_directory is not None:
+            if self.output_filename:
                 output_video.write(combined)
 
         if stream:
             cv2.imshow('iPhone and RealSense Stream', combined)
 
-        if self.frame_index % 100 == 0:
+        if self.frame_index % 50 == 0:
             print(f"Processed {self.frame_index} frames")
 
     def close(self):
+        print("Closing video writer...")
+        print(f"Total frames processed: {self.frame_index} frames && Total video duration: {self.frame_index / 30} seconds")
         self.video_writer.release()

@@ -58,7 +58,7 @@ video.setup_video_writer(phone_images[0], color_images[0])
 # |                               Main loop                              |
 # |----------------------------------------------------------------------|
 
-for i in range(len(color_images)):
+for i in range(len(phone_images)):
     # Get all images as NumPy arrays
     phone_image = phone_images[i]
     depth_image = depth_images[i]
@@ -97,9 +97,8 @@ for i in range(len(color_images)):
     # Write frame to video
     video.write_frame(phone_image, sense_image, depth_image, stream=False)
 
-    # if cv.waitKey(100) == ord("q"):
+    # if cv.waitKey(30) == ord("q"):
     #     break
 
-# video.close()
-print("Video processing complete.")
+video.close()
 cv.destroyAllWindows()
