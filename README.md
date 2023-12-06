@@ -6,19 +6,19 @@ It uses Python libraries like OpenCV and NumPy, along with custom modules like c
 
 ## Installation
 ### Prerequisites
-Python 3.x \\
-OpenCV (cv2) \\
-NumPy \\
-[Any other dependencies that your project requires]
+Python 3.x
+OpenCV (cv2)
+NumPy
+PyRealSense2
+TensorFlow
+TensorFlowHub
 ### Steps
 - Clone the repository or download the source code.
 - Install the required Python packages
 - Place the required data files (.bag and .mp4 files) in the specified directory.
 ## Usage
-- Setting Up Data Files: Before running the script, ensure that the data files (.bag and .mp4 files) are placed in the correct directory. Modify the color_file, depth_file, and phone_file variables in the script to point to the correct file paths.
-
+- Setting Up Data Files: Before running the script, ensure that the data files (.bag and .mp4 files) are placed in the correct directory. In the main.py modify the color_file, depth_file, and phone_file variables in the script to point to the correct file paths.
 - Running the Script: Execute the script in a Python environment. The script will process the provided data files and generate output based on the pose estimation and image processing algorithms.
-
 - Output: The script outputs a video file combining the processed data from both the depth sensor and the phone camera.
 
 ## Custom Modules
@@ -31,7 +31,5 @@ NumPy \\
 ## Note
 The script includes parameters for camera calibration and transformation matrices that might need adjustment based on your specific hardware setup.
 The script is configured for a specific resolution and camera parameters, so it may require modifications to work with different setups.
-Contributing
-Feel free to fork the repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
