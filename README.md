@@ -33,3 +33,12 @@ The script includes parameters for camera calibration and transformation matrice
 The script is configured for a specific resolution and camera parameters, so it may require modifications to work with different setups.
 
 ## License
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+### About the GPL License
+
+The GNU General Public License is a free, copyleft license for software and other kinds of works. The licenses for most software and other practical works are designed to take away your freedom to share and change the works. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change all versions of a program--to make sure it remains free software for all its users.
+
+Under this license, anyone who modifies and redistributes the project must also distribute their modifications under the same license. This requirement ensures that modifications and extensions to the project remain open-source and available to the community under the same terms.
+
+For more information on the GNU General Public License v3.0, please visit [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/gpl-3.0.en.html).
