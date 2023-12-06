@@ -6,9 +6,9 @@ It uses Python libraries like OpenCV and NumPy, along with custom modules like c
 
 ## Installation
 ### Prerequisites
-Python 3.x //
-OpenCV (cv2) //
-NumPy //
+Python 3.x \\
+OpenCV (cv2) \\
+NumPy \\
 [Any other dependencies that your project requires]
 ### Steps
 - Clone the repository or download the source code.
