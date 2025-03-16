@@ -122,9 +122,11 @@ class VideoMaker:
             # Write to video if output path is set
             if self.output_filename and self.output_directory is not None:
                 output_video.write(combined)
-
+        path = "/Users/deniskaanalpay/Desktop/CMU/Term 1/24678 Computer Vision/CV_Project/output/"
+        cv2.imwrite(path + "combined_image_" + str(self.frame_index) + ".png", combined)
         if stream:
             cv2.imshow('iPhone and RealSense Stream', combined)
+            
 
         if self.frame_index % 100 == 0:
             print(f"Processed {self.frame_index} frames")

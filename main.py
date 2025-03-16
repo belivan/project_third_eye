@@ -8,22 +8,22 @@ from extract_data import extract_data
 from camera_merge import VideoMaker
 
 
-# |----------------------------------------------------------------------|
-# |                         Initialise parameters                        |
-# |----------------------------------------------------------------------|
+# |------------------------------------------------------------------------------|
+# |                              Initialise parameters                           |
+# |------------------------------------------------------------------------------|
 
 # Gets the directory where the script is located
 current_dir = os.path.dirname(__file__)
 os.chdir(current_dir)
 
 # SPECIFY DATA FILES HERE: **CHANGE DIRECTORY IF NECESSARY**
-color_file, depth_file, phone_file = extract_data("second_sample.bag", "origin_new.mp4")
+color_file, depth_file, phone_file = extract_data("second_sample.bag", "origin.mp4")
 
 # INITIALIZE DATA PROCESSORS
 
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
-# video = VideoMaker(output_filename="result.mp4")
+video = VideoMaker(output_filename="result.mp4")
 
 # -------------------------DEFINE PHONE PARAMETERS----------------------
 
@@ -52,7 +52,8 @@ phone_images = np.load(phone_file)
 depth_images = np.load(depth_file)
 color_images = np.load(color_file)
 
-# video.setup_video_writer(phone_images[0], color_images[0])
+
+video.setup_video_writer(phone_images[0], color_images[0])
 
 # |----------------------------------------------------------------------|
 # |                               Main loop                              |
@@ -91,12 +92,24 @@ for i in range(len(color_images)):
             coord[1] = 720 / 3024 * coord[1]
             cv.circle(phone_image, coord, 3, (0, 0, 255), -1)
 
-    cv.imshow("phone image", phone_image)
-    cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
+    # cv.imshow("phone image", phone_image)
+    # cv.imshow("color image", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
 
     # Write frame to video
-    # video.write_frame(phone_image, sense_image, depth_image, stream=False)
+    video.write_frame(phone_image, sense_image, depth_image, stream=False)
+    path = "/Users/deniskaanalpay/Desktop/CMU/Term 1/24678 Computer Vision/CV_Project/output/"
+    cv.imwrite(path + "/phone_image_" + str(i) + ".png", phone_image)
+    cv.imwrite(path + "/color_image_" + str(i) + ".png", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
+    depth_clipped = np.clip(depth_image, 0, 8000)
+        # Normalize the depth image to fall within the range 0-255
+    depth_normalized = cv.normalize(depth_clipped, None, 0, 255, cv.NORM_MINMAX, cv.CV_8UC1)
 
+        # Apply the color map to the normalized depth image
+    depth_image = cv.applyColorMap(depth_normalized, cv.COLORMAP_JET)
+    depth_image_jet = cv.applyColorMap(cv.normalize(depth_image, None, 255, 0, cv.NORM_MINMAX, cv.CV_8U), cv.COLORMAP_JET)
+    cv.imwrite(path + "/depth_image_" + str(i) + ".png", depth_image_jet)
+
+    
     if cv.waitKey(100) == ord("q"):
         break
 
