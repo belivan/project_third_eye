@@ -8,22 +8,22 @@ from extract_data import extract_data
 from camera_merge import VideoMaker
 
 
-# |----------------------------------------------------------------------|
-# |                         Initialise parameters                        |
-# |----------------------------------------------------------------------|
+# |------------------------------------------------------------------------------|
+# |                              Initialise parameters                           |
+# |------------------------------------------------------------------------------|
 
 # Gets the directory where the script is located
 current_dir = os.path.dirname(__file__)
 os.chdir(current_dir)
 
 # SPECIFY DATA FILES HERE: **CHANGE DIRECTORY IF NECESSARY**
-color_file, depth_file, phone_file = extract_data("second_sample-001.bag", "test2.mp4")
+color_file, depth_file, phone_file = extract_data("second_sample.bag", "origin.mp4")
 
 # INITIALIZE DATA PROCESSORS
 
 pose = PoseEstimator("movenet_thunder_f16")
 pixel_to_world = PixelToWorldProcessor()
-video = VideoMaker(output_filename="result3_test2.mp4")
+video = VideoMaker(output_filename="result.mp4")
 
 # -------------------------DEFINE PHONE PARAMETERS----------------------
 
@@ -51,6 +51,7 @@ A = np.array([[f / delta, 0.0, Cu],
 phone_images = np.load(phone_file)
 depth_images = np.load(depth_file)
 color_images = np.load(color_file)
+
 
 video.setup_video_writer(phone_images[0], color_images[0])
 
@@ -96,9 +97,21 @@ for i in range(len(phone_images)):
 
     # Write frame to video
     video.write_frame(phone_image, sense_image, depth_image, stream=False)
+    path = "./PATH_HERE/output/"
+    cv.imwrite(path + "/phone_image_" + str(i) + ".png", phone_image)
+    cv.imwrite(path + "/color_image_" + str(i) + ".png", cv.cvtColor(sense_image, cv.COLOR_RGB2BGR))
+    depth_clipped = np.clip(depth_image, 0, 8000)
+        # Normalize the depth image to fall within the range 0-255
+    depth_normalized = cv.normalize(depth_clipped, None, 0, 255, cv.NORM_MINMAX, cv.CV_8UC1)
 
-    # if cv.waitKey(30) == ord("q"):
-    #     break
+        # Apply the color map to the normalized depth image
+    depth_image = cv.applyColorMap(depth_normalized, cv.COLORMAP_JET)
+    depth_image_jet = cv.applyColorMap(cv.normalize(depth_image, None, 255, 0, cv.NORM_MINMAX, cv.CV_8U), cv.COLORMAP_JET)
+    cv.imwrite(path + "/depth_image_" + str(i) + ".png", depth_image_jet)
+
+    
+    if cv.waitKey(100) == ord("q"):
+        break
 
 video.close()
 cv.destroyAllWindows()

@@ -1,0 +1,5 @@
+output/*
+*.mp4
+*.tflite
+*.png
+*.pyc
